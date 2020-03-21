@@ -28,4 +28,50 @@ RSpec.describe 'Users API', type: :request do
       end
     end
   end
+
+  describe 'PUT /api/v1/users/:id' do
+    it 'creates the user and send him a registration email and returns a 200' do
+      user = FactoryBot.create(:user, name: 'Old')
+      user_params = { name: 'New' }
+
+      put '/api/v1/users/', params: { id: user.id, user: user_params }
+
+      expect(response.status).to eq(200)
+      expect(user.reload.name).to eq('New')
+    end
+
+    context 'when id is invalid' do
+      it 'returns a 404' do
+        user_params = { name: 'New' }
+
+        put '/api/v1/users/', params: { id: nil, user: user_params }
+
+        expect(response.status).to eq(404)
+        expect(json_body.fetch("errors")).not_to be_empty
+      end
+    end
+
+    context 'when there are invalid attributes' do
+      it 'returns a 422 with errors' do
+        user = FactoryBot.create(:user)
+        user_params = FactoryBot.attributes_for(:user, :invalid)
+
+        put '/api/v1/users/', params: { id: user.id, user: user_params }
+
+        expect(response.status).to eq(422)
+        expect(json_body.fetch("errors")).not_to be_empty
+      end
+    end
+
+    context 'when attributes are missing' do
+      it 'returns a 422 with errors' do
+        user = FactoryBot.create(:user)
+
+        put '/api/v1/users/', params: { id: user.id }
+
+        expect(response.status).to eq(422)
+        expect(json_body.fetch("errors")).not_to be_empty
+      end
+    end
+  end
 end
