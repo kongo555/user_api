@@ -5,7 +5,7 @@ class User < ApplicationRecord
   validates_presence_of :date_of_birth
 
   def birthday?
-    date_of_birth == Date.today
+    Date.today.month == date_of_birth.month && Date.today.day == date_of_birth.day
   end
 
   def send_registration_email
