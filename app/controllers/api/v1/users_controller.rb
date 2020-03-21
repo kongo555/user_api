@@ -11,8 +11,9 @@ module Api
         render result
       end
 
-      def delete
-        User.delete(params[:id])
+      def destroy
+        User.find(params[:id]).delete
+        render status: :ok
       end
 
       private
