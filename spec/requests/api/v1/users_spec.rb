@@ -74,4 +74,28 @@ RSpec.describe 'Users API', type: :request do
       end
     end
   end
+
+  describe 'DELETE /api/v1/users/:id' do
+    it 'delete user and returns a 200' do
+      user = FactoryBot.create(:user)
+
+      expect {
+        delete '/api/v1/users/', params: { id: user.id }
+      }.to change { User.count }.by(-1)
+
+      expect(response.status).to eq(200)
+      expect(User.exists?(user.id)).to eq(false)
+    end
+
+    context 'when id is invalid' do
+      it 'returns a 404 with errors' do
+        expect {
+          delete '/api/v1/users/', params: { id: nil }
+        }.to not_change { User.count }
+
+        expect(response.status).to eq(404)
+        expect(json_body.fetch("errors")).not_to be_empty
+      end
+    end
+  end
 end
