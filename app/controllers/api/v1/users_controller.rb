@@ -7,7 +7,8 @@ module Api
       end
 
       def update
-        User.find(params[:id]).update(params[:user])
+        result = UpdateUser.new(params[:id], user_params).call
+        render result
       end
 
       def delete
