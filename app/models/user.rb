@@ -1,8 +1,7 @@
 class User < ApplicationRecord
-  validates_presence_of :name
-  validates_presence_of :email
-  validates_uniqueness_of :email
-  validates_presence_of :date_of_birth
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true, email: true
+  validates :date_of_birth, presence: true
 
   def birthday?
     Date.today.month == date_of_birth.month && Date.today.day == date_of_birth.day
