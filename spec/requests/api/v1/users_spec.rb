@@ -30,7 +30,7 @@ RSpec.describe 'Users API', type: :request do
   end
 
   describe 'PUT /api/v1/users/:id' do
-    it 'creates the user and send him a registration email and returns a 200' do
+    it 'update the user and returns a 200' do
       user = FactoryBot.create(:user, name: 'Old')
       user_params = { name: 'New' }
 
@@ -41,7 +41,7 @@ RSpec.describe 'Users API', type: :request do
     end
 
     context 'when id is invalid' do
-      it 'returns a 404' do
+      it 'returns a 404 with errors' do
         user_params = { name: 'New' }
 
         put '/api/v1/users/', params: { id: nil, user: user_params }
